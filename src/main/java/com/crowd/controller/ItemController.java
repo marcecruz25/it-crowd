@@ -6,6 +6,9 @@ import com.crowd.service.ItemService;
 import com.crowd.util.Constants;
 import com.crowd.util.CustomComparatorWord;
 import com.crowd.util.Validations;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -30,6 +33,7 @@ public class ItemController {
         this.itemService = itemService;
     }
 
+    @ApiOperation(value = "Retorna todos los item y siempre esta ordenado en forma ASCENDENTE")
     @RequestMapping(value = "/items", method = RequestMethod.GET)
     public ResponseEntity<Response> getAllItems() {
         List<Word> listas = new ArrayList<>();
@@ -39,13 +43,14 @@ public class ItemController {
         return new ResponseEntity<Response>(words, HttpStatus.OK);
     }
 
-    /*Devolver los items segun lo indique el FE(Front-End) o el usuario a traves de un curl o post*/
-
+    @ApiOperation(value = "Retorna todos los Items y se le pasa un parametro para ordenar de manera ASC o DESC, si no se especifica nada lo ordena por ASC")
     @RequestMapping(value = "/items/custom", method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "criteriaSort", value = "Puede ser ASC o DESC, por default es ASC", required = false, dataType = "string", paramType = "query")})
     public ResponseEntity<Response> getAllItemsBySort(@RequestParam(required = false) String criteriaSort) {
         List<Word> listas = new ArrayList<>();
         listas = itemService.findAll();
-        if ("ASC".equals(criteriaSort)) {
+        if ("DESC".equalsIgnoreCase(criteriaSort)) {
             Collections.sort(listas, new CustomComparatorWord(false));
         } else {
             Collections.sort(listas, new CustomComparatorWord(true));
@@ -54,7 +59,10 @@ public class ItemController {
         return new ResponseEntity<Response>(words, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Retorna item por ID")
     @RequestMapping(value = "/item/{id}", method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "Id de la palabra", required = true, dataType = "integer", paramType = "query")})
     public ResponseEntity<Response> getItem(@PathVariable("id") long id) {
         HttpStatus statusCode = HttpStatus.OK;
         Response<Object> response;
@@ -69,6 +77,7 @@ public class ItemController {
         return new ResponseEntity<Response>(response, statusCode);
     }
 
+    @ApiOperation(value = "Crea un Item")
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/item", method = RequestMethod.POST)
     public ResponseEntity<Response> createItem(@RequestBody Word word) {
@@ -90,8 +99,11 @@ public class ItemController {
         return new ResponseEntity<Response>(response, statusCode);
     }
 
+    @ApiOperation(value = "Modifica un item, si es que existe")
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/item/{id}", method = RequestMethod.PUT)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "Id de la palabra", required = true, dataType = "integer", paramType = "query")})
     public ResponseEntity<Response> updateItem(@PathVariable("id") long id, @RequestBody Word word) {
         Word currentWord = itemService.finById(id);
         if (currentWord == null) {
@@ -109,8 +121,11 @@ public class ItemController {
         }
     }
 
+    @ApiOperation(value = "Elimina un item, si es que existe")
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/item/{id}", method = RequestMethod.DELETE)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "Id de la palabra", required = true, dataType = "integer", paramType = "query")})
     public ResponseEntity<Response> deleteItem(@PathVariable("id") long id) {
         Word currentWord = itemService.finById(id);
         if (currentWord == null) {
@@ -122,9 +137,12 @@ public class ItemController {
         return new ResponseEntity<Response>(response, HttpStatus.OK);
     }
 
-    /*Metodo exclusivo para hacer una busqueda con paginado*/
-
+    @ApiOperation(value = "Metodo exclusivo para hacer una busqueda con paginado usando spring data")
     @RequestMapping(value = "/items/criteria", method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pagina", value = "Indica el numero de Pagina", required = false, dataType = "integer", paramType = "query"),
+            @ApiImplicitParam(name = "tamanio", value = "Indica la cantidad que queremos de esa pagina", required = false, dataType = "integer", paramType = "query"),
+            @ApiImplicitParam(name = "criteriaSort", value = "Puede ser ASC o DESC, por default es ASC", required = false, dataType = "string", paramType = "query")})
     public ResponseEntity<Response> getAllItemsBySort(@RequestParam(required = false) Integer pagina,
                                                       @RequestParam(required = false) Integer tamanio,
                                                       @RequestParam(required = false) String criteriaSort) {

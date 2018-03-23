@@ -52,10 +52,10 @@ public class ItemServiceImpl implements ItemService {
         }
 
         Sort sort;
-        if ("ASC".equals(criteriaSort)) {
-            sort = new Sort(Sort.Direction.ASC, "nombre");
-        } else {
+        if ("DESC".equalsIgnoreCase(criteriaSort)) {
             sort = new Sort(Sort.Direction.DESC, "nombre");
+        } else {
+            sort = new Sort(Sort.Direction.ASC, "nombre");
         }
 
         Pageable pageable = new PageRequest(pagina, tamanio, sort);

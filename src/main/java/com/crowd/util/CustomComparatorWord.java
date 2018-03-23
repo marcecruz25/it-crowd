@@ -9,15 +9,15 @@ import java.util.Comparator;
  */
 public class CustomComparatorWord implements Comparator<Word> {
 
-    private boolean sortDesc;
+    private boolean sortAsc;
 
-    public CustomComparatorWord(boolean sortDesc) {
-        this.sortDesc = sortDesc;
+    public CustomComparatorWord(boolean sortAsc) {
+        this.sortAsc = sortAsc;
     }
 
     @Override
     public int compare(Word o1, Word o2) {
-        if (sortDesc) {
+        if (sortAsc) {
             return o1.getNombre().compareTo(o2.getNombre());
         }
         return o2.getNombre().compareTo(o1.getNombre());
