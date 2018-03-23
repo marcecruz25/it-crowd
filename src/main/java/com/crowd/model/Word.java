@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by marce on 3/21/18.
@@ -16,7 +17,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Data
 @Builder
-public class Word implements Comparable<Word> {
+public class Word implements Comparable<Word>, Serializable {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)

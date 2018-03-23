@@ -20,9 +20,12 @@ public class ItemServiceImpl implements ItemService {
 
     private final int TAMANIO_PAGINA_DEFAULT = 100;
     private final int PAGINA_DEFAULT = 0;
+    private final ItemRepository itemRepository;
 
     @Autowired
-    private ItemRepository itemRepository;
+    public ItemServiceImpl(ItemRepository itemRepository) {
+        this.itemRepository = itemRepository;
+    }
 
     @Override
     public boolean create(Word word) {
@@ -67,5 +70,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Word update(Word word) {
         return itemRepository.save(word);
+    }
+
+    @Override
+    public void delete(long id) {
+        itemRepository.delete(id);
     }
 }

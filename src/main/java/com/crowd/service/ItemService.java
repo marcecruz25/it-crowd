@@ -15,5 +15,5 @@ public interface ItemService {
     Page findAllByCriteria(Integer pagina, Integer tamanio, String criteriaSort);
     Word finById(long id);
     Word update(Word word);
-
+    void delete(long id);
 }

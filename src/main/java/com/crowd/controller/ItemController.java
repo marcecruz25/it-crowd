@@ -23,7 +23,7 @@ import java.util.List;
 @RequestMapping("/api/v1")
 public class ItemController {
 
-    private ItemService itemService;
+    private final ItemService itemService;
 
     @Autowired
     public ItemController(ItemService itemService) {
@@ -63,7 +63,7 @@ public class ItemController {
             statusCode = HttpStatus.NOT_FOUND;
             response = Response.builder().status(statusCode.toString()).message(String.valueOf(Constants.ResponseConstants.FAILURE)).details(id).build();
         } else {
-            response = Response.builder().status(HttpStatus.OK.toString()).message(String.valueOf(Constants.ResponseConstants.SUCCESS)).details(currentWord).build();
+            response = Response.builder().status(statusCode.toString()).message(String.valueOf(Constants.ResponseConstants.SUCCESS)).details(currentWord).build();
         }
 
         return new ResponseEntity<Response>(response, statusCode);
@@ -107,6 +107,19 @@ public class ItemController {
             Response<Object> response = Response.builder().status(HttpStatus.NOT_ACCEPTABLE.toString()).message(String.valueOf(Constants.ResponseConstants.FAILURE)).details(word).build();
             return new ResponseEntity<Response>(response, HttpStatus.NOT_ACCEPTABLE);
         }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/item/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<Response> deleteItem(@PathVariable("id") long id) {
+        Word currentWord = itemService.finById(id);
+        if (currentWord == null) {
+            Response<Object> response = Response.builder().status(HttpStatus.NOT_FOUND.toString()).message(String.valueOf(Constants.ResponseConstants.FAILURE)).details(id).build();
+            return new ResponseEntity<Response>(response, HttpStatus.NOT_FOUND);
+        }
+        itemService.delete(id);
+        Response<Object> response = Response.builder().status(HttpStatus.OK.toString()).message(String.valueOf(Constants.ResponseConstants.SUCCESS)).details(currentWord).build();
+        return new ResponseEntity<Response>(response, HttpStatus.OK);
     }
 
     /*Metodo exclusivo para hacer una busqueda con paginado*/

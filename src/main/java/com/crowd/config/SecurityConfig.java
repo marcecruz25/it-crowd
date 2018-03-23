@@ -20,6 +20,9 @@ import org.springframework.web.filter.CorsFilter;
 
 import javax.annotation.Resource;
 
+/**
+ * Created by marce on 3/21/18.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)

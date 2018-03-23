@@ -8,6 +8,6 @@ import com.crowd.model.Word;
 public class Validations {
 
     public static boolean isDataValid(Word word) {
-        return (null != word.getNombre() && word.getNombre().length() < 27);
+        return (null != word.getNombre() && word.getNombre().length() < 26);
     }
 }
